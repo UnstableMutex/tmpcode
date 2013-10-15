@@ -14,3 +14,8 @@ class actstat
         public int currentstid { get; set; }
         public string Name { get; set; }
     }
+ class hststat
+  {
+      public int housestid { get; set; }
+      public string Name { get; set; }
+  }
