@@ -35,3 +35,13 @@ class actstat
         public int ndoctypeid { get; set; }
         public string name { get; set; }
     }
+    
+     class normdoc
+   {
+       public string normdocid { get; set; }
+       public string docname { get; set; }
+       public DateTime docdate { get; set; }
+       public string docnum { get; set; }
+       public int doctype { get; set; }
+       public int docimgid { get; set; }
+   }
