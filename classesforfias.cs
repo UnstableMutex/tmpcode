@@ -25,3 +25,13 @@ class actstat
         public int intvstatid { get; set; }
         public string name { get; set; }
     }
+ class intvstat
+    {
+        public int intvstatid { get; set; }
+        public string name { get; set; }
+    }
+    class ndoctype
+    {
+        public int ndoctypeid { get; set; }
+        public string name { get; set; }
+    }
