@@ -19,3 +19,9 @@ class actstat
       public int housestid { get; set; }
       public string Name { get; set; }
   }
+
+    class intvstat
+    {
+        public int intvstatid { get; set; }
+        public string name { get; set; }
+    }
