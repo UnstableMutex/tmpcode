@@ -17,12 +17,15 @@ namespace CAP
             DependencyProperty.Register("ControlsMargin", typeof(Thickness), typeof(CoupleAlignmentPanel), new FrameworkPropertyMetadata(new Thickness(0)));
         protected override Size MeasureOverride(Size availableSize)
         {
-            if (IsOdd(Children.Count))
+
+            if (Children.Count.IsOdd())
             {
                 throw new CoupleAlignmentPanelException("Children count must be even");
             }
-            MeasureChildrenByInfinity();
             var elements = GetElementPairs();
+            MeasureChildrenByInfinity();
+          
+
             Func<UIElement, double> g =
                 x =>
                 {
@@ -30,7 +33,6 @@ namespace CAP
                     return d;
                 };
             var heights = GetHeights(elements, g);
-            //   var width = elements.Select(x => x.Item1.DesiredSize.Width + x.Item2.DesiredSize.Width).Max();
             foreach (UIElement child in Children)
             {
                 var ch = child as FrameworkElement;
@@ -55,26 +57,26 @@ namespace CAP
                         }
                     }
                 }
-                child.Arrange(new Rect(new Point(0, 0), child.DesiredSize));
             }
-            //  return new Size(width, heights.Sum());
-            return new Size(availableSize.Width, heights.Sum());
+            var uiElement = Parent as UIElement;
+            if (uiElement != null)
+            {
+                var parentw = uiElement.DesiredSize.Width;
+                return new Size(parentw, heights.Sum());
+            }
+            else
+            {
+                throw new CoupleAlignmentPanelException("Parent is not ui element");
+            }
         }
-        bool IsOdd(int i)
-        {
-            return i % 2 == 1;
-        }
-        bool IsEven(int i)
-        {
-            return i % 2 == 0;
-        }
+
         protected override Size ArrangeOverride(Size finalSize)
         {
-            if (IsOdd(Children.Count))
+            if (Children.Count.IsOdd())
             {
                 throw new CoupleAlignmentPanelException("Children count must be even");
             }
-            MeasureChildrenByInfinity();
+
             var elements = GetElementPairs();
             var heights = GetHeights(elements, x => x.DesiredSize.Height);
             var labelssizes = elements.Select(element => element.Item1.DesiredSize);
@@ -83,7 +85,7 @@ namespace CAP
             var maxWidth = labelssizes.Max(x => x.Width);
             var txtWidth = finalSize.Width - maxWidth;
 
-            //  var txtWidth = elements.Select(e => e.Item2.DesiredSize).Max(x=>x.Width);
+
 
             if (txtWidth < 0)
             {
@@ -97,14 +99,9 @@ namespace CAP
                 element.Item2.Arrange(new Rect(maxWidth, y, txtWidth, heights[i]));
                 i++;
             }
-            if (!_measureInvalidated)
-            {
-                InvalidateMeasure();
-                _measureInvalidated = true;
-            }
-            return new Size(txtWidth + maxWidth, heights.Sum());
+            return finalSize;
         }
-        private bool _measureInvalidated;
+
         private static double[] GetHeights(Tuple<UIElement, UIElement>[] elements, Func<UIElement, double> heightGetter)
         {
             var res = new double[elements.Count()];
@@ -124,7 +121,7 @@ namespace CAP
             foreach (UIElement child in Children)
             {
                 i++;
-                bool ise = IsEven(i);
+                bool ise = i.IsEven();
                 if (ise)
                 {
                     even[i / 2] = child;
