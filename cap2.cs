@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -7,32 +9,30 @@ namespace CAP
 {
     public class CoupleAlignmentPanel : Panel
     {
+
+        public CoupleAlignmentPanel()
+        {
+            VerticalAlignment = VerticalAlignment.Top;
+        
+        }
+
+
+
         public Thickness ControlsMargin
         {
-            get { return (Thickness)GetValue(ControlsMarginProperty); }
+            get
+            {
+
+                return (Thickness)GetValue(ControlsMarginProperty);
+            }
             set { SetValue(ControlsMarginProperty, value); }
         }
         // Using a DependencyProperty as the backing store for ControlsMargin.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ControlsMarginProperty =
             DependencyProperty.Register("ControlsMargin", typeof(Thickness), typeof(CoupleAlignmentPanel), new FrameworkPropertyMetadata(new Thickness(0)));
-        protected override Size MeasureOverride(Size availableSize)
+
+        private void SetControlsMargin()
         {
-
-            if (Children.Count.IsOdd())
-            {
-                throw new CoupleAlignmentPanelException("Children count must be even");
-            }
-            var elements = GetElementPairs();
-            MeasureChildrenByInfinity();
-          
-
-            Func<UIElement, double> g =
-                x =>
-                {
-                    double d = x.DesiredSize.Height;
-                    return d;
-                };
-            var heights = GetHeights(elements, g);
             foreach (UIElement child in Children)
             {
                 var ch = child as FrameworkElement;
@@ -58,49 +58,8 @@ namespace CAP
                     }
                 }
             }
-            var uiElement = Parent as UIElement;
-            if (uiElement != null)
-            {
-                var parentw = uiElement.DesiredSize.Width;
-                return new Size(parentw, heights.Sum());
-            }
-            else
-            {
-                throw new CoupleAlignmentPanelException("Parent is not ui element");
-            }
         }
 
-        protected override Size ArrangeOverride(Size finalSize)
-        {
-            if (Children.Count.IsOdd())
-            {
-                throw new CoupleAlignmentPanelException("Children count must be even");
-            }
-
-            var elements = GetElementPairs();
-            var heights = GetHeights(elements, x => x.DesiredSize.Height);
-            var labelssizes = elements.Select(element => element.Item1.DesiredSize);
-            var i = 0;
-            //считаем максимальную ширину лебела по которой будем выравнивать все
-            var maxWidth = labelssizes.Max(x => x.Width);
-            var txtWidth = finalSize.Width - maxWidth;
-
-
-
-            if (txtWidth < 0)
-            {
-                txtWidth = 0;
-            }
-            foreach (var element in elements)
-            {
-                //считаем y как сумму высот всех лебелов до текущего
-                var y = heights.Take(i).Sum();
-                element.Item1.Arrange(new Rect(0, y, maxWidth, heights[i]));
-                element.Item2.Arrange(new Rect(maxWidth, y, txtWidth, heights[i]));
-                i++;
-            }
-            return finalSize;
-        }
 
         private static double[] GetHeights(Tuple<UIElement, UIElement>[] elements, Func<UIElement, double> heightGetter)
         {
@@ -138,14 +97,105 @@ namespace CAP
             }
             return elements;
         }
-        private void MeasureChildrenByInfinity()
+        //private void MeasureChildrenByInfinity()
+        //{
+        //    var size = new Size(double.PositiveInfinity, double.PositiveInfinity);
+
+        //    foreach (UIElement child in Children)
+        //    {
+        //        child.Measure(size);
+
+        //    }
+        //}
+        protected override Size MeasureOverride(Size availableSize)
         {
-            var size = new Size(double.PositiveInfinity, double.PositiveInfinity);
-            foreach (UIElement child in Children)
+
+
+            if (Children.Count.IsOdd())
             {
-                child.Measure(size);
+                throw new CoupleAlignmentPanelException("Children count must be even");
             }
+            var elements = GetElementPairs();
+            SetControlsMargin();
+
+            foreach (var label in elements.Select(x => x.Item1))
+            {
+                label.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            }
+            var labelmaxwidth = elements.Select(element => element.Item1.DesiredSize.Width).Max();
+
+            foreach (var inputElement in elements.Select(x => x.Item2))
+            {
+                inputElement.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+            }
+            var labelmaxheight = elements.Select(element => element.Item1.DesiredSize.Height).Sum();
+            var inputControlMaxHeight = elements.Select(element => element.Item2.DesiredSize.Height).Sum();
+
+            var textmaxwidth = elements.Select(element => element.Item2.DesiredSize.Width).Max();
+
+
+            var w = labelmaxwidth + textmaxwidth;
+            if (w < 0)
+                w = 0;
+           
+            var h = Math.Max(labelmaxheight, inputControlMaxHeight);
+            if (h < 0)
+                h = 0;
+            return new Size(w, h);
         }
+        protected override Size ArrangeOverride(Size finalSize)
+        {
+         
+            if (Children.Count.IsOdd())
+            {
+                throw new CoupleAlignmentPanelException("Children count must be even");
+            }
+
+            var elements = GetElementPairs();
+            var heights = GetHeights(elements, x => x.DesiredSize.Height);
+            var labelssizes = elements.Select(element => element.Item1.DesiredSize);
+            var i = 0;
+            //считаем максимальную ширину лебела по которой будем выравнивать все
+            var maxWidth = labelssizes.Max(x => x.Width);
+            if (maxWidth < 0)
+            {
+                maxWidth = 0;
+            }
+
+            var txtWidth = elements.Select(x => x.Item2.DesiredSize.Width).Max();
+            var txtWidth2 = finalSize.Width - maxWidth;
+            if (txtWidth2 < 0)
+            {
+                txtWidth2 = 0;
+            }
+      if (txtWidth < 0)
+                txtWidth = 0;
+            txtWidth = Math.Max(txtWidth, txtWidth2);
+      
+
+
+            double curY = 0;
+            foreach (var element in elements)
+            {
+                //считаем y как сумму высот всех лебелов до текущего
+
+                element.Item1.Arrange(new Rect(0, curY, maxWidth, heights[i]));
+                element.Item2.Arrange(new Rect(maxWidth, curY, txtWidth, heights[i]));
+                curY += heights.ElementAt(i);
+                i++;
+            }
+            var w = maxWidth + txtWidth;
+            if (w < 0)
+            {
+                w = 0;
+            }
+
+            var h = heights.Sum();
+            if (h < 0)
+                h = 0;
+            return new Size(w, h);
+        }
+
+
     }
 }
-
