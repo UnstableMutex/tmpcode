@@ -12,7 +12,10 @@
         {
             return reader.GetString(reader.GetOrdinal(fieldName));
         }
-
+          public static string GetStringTrim(this IDataReader r,int index)
+       {
+           return r.GetString(index).Trim();
+       }
         public static DateTime GetDateTime(this DbDataReader reader, string fieldName)
         {
             return reader.GetDateTime(reader.GetOrdinal(fieldName));
