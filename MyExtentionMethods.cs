@@ -8,6 +8,15 @@
     }
      public static partial class Ext
     {
+        public static string RemoveEndIfExists(this string s, string end, bool ignorecase)
+        {
+            if (s.EndsWith(end, ignorecase, CultureInfo.CurrentCulture))
+            {
+                return s.Substring(0, s.Length - end.Length);
+            }
+            return s;
+
+        }
         public static string GetString(this DbDataReader reader, string fieldName)
         {
             return reader.GetString(reader.GetOrdinal(fieldName));
