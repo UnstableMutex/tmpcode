@@ -21,7 +21,7 @@
         {
             return reader.GetString(reader.GetOrdinal(fieldName));
         }
-          public static string GetStringTrim(this IDataReader r,int index)
+          public static string GetStringTrim(this IDataRecord r,int index)
        {
            return r.GetString(index).Trim();
        }
