@@ -3,6 +3,23 @@
         public static void Copy(string sourceFileName, string destFolder)
         {
             string fn = Path.GetFileName(sourceFileName);
+            try
+            {
+                Directory.CreateDirectory(destFolder);
+            }
+            catch (Exception)
+            {
+                
+               
+            }
+            File.Copy(sourceFileName, Path.Combine(destFolder, fn));
+        }
+    }
+   public static class MyFile
+    {
+        public static void Copy(string sourceFileName, string destFolder)
+        {
+            string fn = Path.GetFileName(sourceFileName);
             File.Copy(sourceFileName,Path.Combine(destFolder,fn));
         }
     }
