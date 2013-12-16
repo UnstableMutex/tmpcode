@@ -1,3 +1,12 @@
+   public static class MyFile
+    {
+        public static void Copy(string sourceFileName, string destFolder)
+        {
+            string fn = Path.GetFileName(sourceFileName);
+            File.Copy(sourceFileName,Path.Combine(destFolder,fn));
+        }
+    }
+    
   public static partial class ext
     {
         public static IEnumerable<T> NotNull<T>(this IEnumerable<T> collection) where T:class
