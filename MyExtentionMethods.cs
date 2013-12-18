@@ -34,6 +34,15 @@
     }
      public static partial class Ext
     {
+        public static string CapitalizeWord(this string s)
+        {
+            if (string.IsNullOrEmpty(s))
+                return s;
+            else
+            {
+               return s[0].ToString().ToUpper() + s.Substring(1).ToLower();
+            }
+        }
         public static string RemoveEndIfExists(this string s, string end, bool ignorecase)
         {
             if (s.EndsWith(end, ignorecase, CultureInfo.CurrentCulture))
