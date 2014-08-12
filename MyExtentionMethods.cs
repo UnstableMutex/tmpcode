@@ -66,7 +66,10 @@
         {
             return reader.GetDateTime(reader.GetOrdinal(fieldName));
         }
-
+ public static decimal GetDecimal(this IDataRecord r, string fieldName)
+       {
+           return r.GetDecimal(r.GetOrdinal(fieldName));
+       }
         public static void AddIfNo<TKey, TVal>(this Dictionary<TKey, TVal> dic, TKey key, TVal val)
         {
             if (!dic.ContainsKey(key))
