@@ -34,6 +34,40 @@
     }
      public static partial class Ext
     {
+       
+               public static string GetString(this IDataRecord r, string fieldName)
+        {
+            var ind = r.GetOrdinal(fieldName);
+            return r.GetString(ind);
+        }
+        public static decimal GetDecimal(this IDataRecord r, string fieldName)
+        {
+            return r.GetDecimal(r.GetOrdinal(fieldName));
+        }
+        public static short GetInt16(this IDataRecord r, string fieldName)
+        {
+            return r.GetInt16(r.GetOrdinal(fieldName));
+        }
+        public static int GetInt32(this IDataRecord r, string fieldName)
+        {
+             return r.GetInt32(r.GetOrdinal(fieldName));
+        }
+        public static DateTime GetDateTime(this IDataRecord reader, string fieldName)
+        {
+            return reader.GetDateTime(reader.GetOrdinal(fieldName));
+        }
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
+       
         public static string CapitalizeWord(this string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -52,24 +86,12 @@
             return s;
 
         }
-       public static string GetString(this IDataRecord r, string fieldName)
-       {
-           var ind = r.GetOrdinal(fieldName);
-           return r.GetString(ind);
-       }
-       
+
           public static string GetStringTrim(this IDataRecord r,int index)
        {
            return r.GetString(index).Trim();
        }
-        public static DateTime GetDateTime(this IDataRecord reader, string fieldName)
-        {
-            return reader.GetDateTime(reader.GetOrdinal(fieldName));
-        }
- public static decimal GetDecimal(this IDataRecord r, string fieldName)
-       {
-           return r.GetDecimal(r.GetOrdinal(fieldName));
-       }
+
         public static void AddIfNo<TKey, TVal>(this Dictionary<TKey, TVal> dic, TKey key, TVal val)
         {
             if (!dic.ContainsKey(key))
