@@ -35,10 +35,14 @@
      public static partial class Ext
     {
        
-               public static string GetString(this IDataRecord r, string fieldName)
+        public static string GetString(this IDataRecord r, string fieldName)
         {
             var ind = r.GetOrdinal(fieldName);
             return r.GetString(ind);
+        }
+        public static bool GetBoolean(this IDataRecord r, string fieldName)
+        {
+            return r.GetBoolean(r.GetOrdinal(fieldName));
         }
         public static decimal GetDecimal(this IDataRecord r, string fieldName)
         {
@@ -60,18 +64,7 @@
         {
             return reader.GetDateTime(reader.GetOrdinal(fieldName));
         }
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
-       
+
         public static string CapitalizeWord(this string s)
         {
             if (string.IsNullOrEmpty(s))
