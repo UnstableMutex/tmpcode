@@ -44,6 +44,10 @@
         {
             return r.GetDecimal(r.GetOrdinal(fieldName));
         }
+        public static bool IsDBNull(this IDataRecord r, string fieldName)
+        {
+            return r.IsDBNull(r.GetOrdinal(fieldName));
+        }
         public static short GetInt16(this IDataRecord r, string fieldName)
         {
             return r.GetInt16(r.GetOrdinal(fieldName));
