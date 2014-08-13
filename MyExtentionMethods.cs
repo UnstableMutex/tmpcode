@@ -60,6 +60,10 @@
         {
              return r.GetInt32(r.GetOrdinal(fieldName));
         }
+        public static byte GetByte(this IDataRecord r, string fieldName)
+        {
+            return r.GetByte(r.GetOrdinal(fieldName));
+        }
         public static DateTime GetDateTime(this IDataRecord reader, string fieldName)
         {
             return reader.GetDateTime(reader.GetOrdinal(fieldName));
