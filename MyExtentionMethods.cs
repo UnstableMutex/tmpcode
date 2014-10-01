@@ -100,4 +100,9 @@
                 dic.Add(key, val);
             }
         }
+        public static T GetData<T>(this IDataObject dataObject)
+        {
+            var data = (T)dataObject.GetData(typeof (T));
+            return data;
+        }
     }
