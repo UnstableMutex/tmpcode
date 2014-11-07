@@ -100,9 +100,20 @@
                 dic.Add(key, val);
             }
         }
+         public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> dic,TKey key, TValue defValue)
+        {
+            TValue result;
+            bool b = dic.TryGetValue(key, out result);
+            if (!b)
+            {
+                result = defValue;
+            }
+            return result;
+        }
         public static T GetData<T>(this IDataObject dataObject)
         {
             var data = (T)dataObject.GetData(typeof (T));
             return data;
         }
+        
     }
