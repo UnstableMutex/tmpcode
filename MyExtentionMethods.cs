@@ -92,6 +92,10 @@
        {
            return r.GetString(index).Trim();
        }
+               public static string GetStringTrim(this IDataRecord r, string fieldName)
+        {
+            return r.GetString(r.GetOrdinal(fieldName)).Trim();
+        }
 
         public static void AddIfNo<TKey, TVal>(this Dictionary<TKey, TVal> dic, TKey key, TVal val)
         {
