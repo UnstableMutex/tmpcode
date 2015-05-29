@@ -64,6 +64,10 @@
         {
             return r.GetInt64(r.GetOrdinal(fieldName));
         }
+        public static Guid GetGuid(this IDataRecord r, string fieldName)
+        {
+            return r.GetGuid(r.GetOrdinal(fieldName));
+        }
         public static byte GetByte(this IDataRecord r, string fieldName)
         {
             return r.GetByte(r.GetOrdinal(fieldName));
