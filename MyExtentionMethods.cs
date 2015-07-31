@@ -40,6 +40,18 @@
             var ind = r.GetOrdinal(fieldName);
             return r.GetString(ind);
         }
+        public static string GetString(this IDataRecord r, string fieldName, string def)
+        {
+            var ind = r.GetOrdinal(fieldName);
+            if (r.IsDBNull(ind))
+            {
+                return def;
+            }
+            else
+            {
+                return r.GetString(ind);
+            }
+        }
         public static bool GetBoolean(this IDataRecord r, string fieldName)
         {
             return r.GetBoolean(r.GetOrdinal(fieldName));
