@@ -1,41 +1,31 @@
-  public class MyReflectionRowMapper<T>:IRowMapper<T> where T:new()
+    public class MyReflectionRowMapper<T> : IRowMapper<T> where T : new()
     {
-       
-        public T MapRow(IDataRecord row)
+        public MyReflectionRowMapper()
         {
-           
-
-
-
-
-
-
-
-            T obj = new T();
-            var t = obj.GetType();
-
+            var t = typeof(T);
             var props = t.GetProperties();
-            Dictionary<string,PropertyInfo> dic=new Dictionary<string, PropertyInfo>();
+            var d=new Dictionary<string, PropertyInfo>();
             foreach (var propertyInfo in props)
             {
-                dic.Add(propertyInfo.Name.ToLower(),propertyInfo);
+                d.Add(propertyInfo.Name.ToLower(), propertyInfo);
             }
+            dic = d;
+        }
+        protected string GetPropertyNameFromFieldName(string fieldName)
+        {
+            return fieldName;
+        }
+        private readonly IReadOnlyDictionary<string, PropertyInfo> dic;
+        public T MapRow(IDataRecord row)
+        {
+            T obj = new T();
             for (int i = 0; i < row.FieldCount; i++)
             {
                 var name = row.GetName(i);
-               var n= name.Replace("_", string.Empty);
+                var n = GetPropertyNameFromFieldName(name);
                 var p = dic[n.ToLower()];
-                p.SetValue(obj,row[i]);
-
+                p.SetValue(obj, row[i]);
             }
-
-            
-
-            //var props = obj.GetType().GetProperties();
-            //foreach (var propertyInfo in props)
-            //{
-            //    propertyInfo.SetValue(obj,row[propertyInfo.Name]);
-            //}
             return obj;
         }
     }
