@@ -4,7 +4,7 @@
         {
             var t = typeof(T);
             var props = t.GetProperties();
-            var d=new Dictionary<string, PropertyInfo>();
+            var d = new Dictionary<string, PropertyInfo>();
             foreach (var propertyInfo in props)
             {
                 d.Add(propertyInfo.Name.ToLower(), propertyInfo);
@@ -23,8 +23,11 @@
             {
                 var name = row.GetName(i);
                 var n = GetPropertyNameFromFieldName(name);
-                var p = dic[n.ToLower()];
-                p.SetValue(obj, row[i]);
+                if (dic.ContainsKey(n.ToLower()))
+                {
+                    var p = dic[n.ToLower()];
+                    p.SetValue(obj, row[i]);
+                }
             }
             return obj;
         }
