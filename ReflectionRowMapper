@@ -26,7 +26,10 @@
                 if (dic.ContainsKey(n.ToLower()))
                 {
                     var p = dic[n.ToLower()];
-                    p.SetValue(obj, row[i]);
+                    if (!row.IsDBNull(i))
+                    {
+                        p.SetValue(obj, row[i]);
+                    }
                 }
             }
             return obj;
