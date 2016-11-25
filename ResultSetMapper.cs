@@ -36,7 +36,11 @@
                 foreach (var key in dicn.Keys)
                 {
                     var p = dicn[key];
-                    p.SetValue(obj,reader[key]);
+                    //Work with null
+                    if (!reader.IsDBNull(key))
+                    {
+                        p.SetValue(obj, reader[key]);
+                    }
                 }
                 yield return obj;
             }
